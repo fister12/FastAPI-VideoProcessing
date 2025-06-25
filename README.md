@@ -155,6 +155,16 @@ Then open [http://localhost:8080/index.html](http://localhost:8080/index.html)
 }
 ```
 
+## Output and docker
+I have made a docker image of the whole app to make it easier to run the complete app
+as can be seen by the included dockerfile in the repository
+
+### Terminal Output
+Once the Video is uploaded the terminal responds correctly 
+-![Terminal image 1](images\Terminal Output 1.png)
+-![Terminal image 2](images\Terminal Output 2.png) 
+
+
 ## Example Screenshots
 
 - ![Swagger UI](images/swagger.png)
