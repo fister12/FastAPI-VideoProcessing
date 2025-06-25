@@ -14,15 +14,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 
-# --- Configuration ---
-# Directory to temporarily store uploaded video files
+
 UPLOAD_DIR = Path("uploaded_videos")
-# Directory to store extracted frames
+
 FRAME_DIR = Path("extracted_frames")
-# Qdrant collection name for storing frame feature vectors
+
 COLLECTION_NAME = "video_frames"
 
-# --- FastAPI App Initialization ---
+
 app = FastAPI(
     title="Video Frame Processor and Similarity Search",
     description="API for uploading videos, extracting frames, computing feature vectors, "
@@ -71,7 +70,7 @@ async def startup_event():
             print(f"Qdrant collection '{COLLECTION_NAME}' already exists.")
     except Exception as e:
         print(f"Error initializing Qdrant client or collection: {e}")
-        # In a real app, you might want to raise an exception or handle this more gracefully.
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
