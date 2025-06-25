@@ -9,6 +9,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from qdrant_client import QdrantClient, models
 import uuid
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -27,6 +28,15 @@ app = FastAPI(
     description="API for uploading videos, extracting frames, computing feature vectors, "
                 "and querying for similar frames using an in-memory Qdrant vector database.",
     version="1.0.0"
+)
+
+# --- CORS Middleware ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify ["http://localhost:8080"] for more security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # --- Qdrant Client Initialization ---
@@ -359,28 +369,4 @@ async def query_similar_frames(
         raise HTTPException(status_code=500, detail=f"Failed to query similar frames: {e}")
 
 
-# --- How to Run (for local development) ---
-# To run this application, save the code as `main.py` and run the following command in your terminal:
-# uvicorn main:app --reload
-
-# Then, you can access the API documentation (Swagger UI) at:
-# http://127.0.0.1:8000/docs
-# Or the alternative ReDoc documentation at:
-# http://127.0.0.1:8000/redoc
-
-# Example usage with curl:
-# 1. Upload a video:
-#    curl -X POST "http://127.0.0.1:8000/upload_and_process_video/?interval_seconds=2" \
-#    -H "accept: application/json" \
-#    -H "Content-Type: multipart/form-data" \
-#    -F "video_file=@/path/to/your/video.mp4"
-#    (Replace `/path/to/your/video.mp4` with the actual path to your video file)
-
-# 2. Query similar frames with an image:
-#    curl -X POST "http://127.0.0.1:8000/query_similar_frames/?limit=3" \
-#    -H "accept: application/json" \
-#    -H "Content-Type: multipart/form-data" \
-#    -F "query_image=@/path/to/your/image.jpg"
-#    (Replace `/path/to/your/image.jpg` with the actual path to an image file,
-#    preferably one of the extracted frames for testing similarity.)
 
