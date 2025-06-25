@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Processing API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Processing API</h1>
+
+    <!-- Upload Video Form -->
+    <form id="uploadForm">
+        <h2>Upload and Process Video</h2>
+        <input type="file" id="videoFile" name="videoFile" accept="video/*" required>
+        <input type="number" id="intervalSeconds" name="intervalSeconds" placeholder="Interval Seconds" value="1" required>
+        <button type="submit">Upload Video</button>
+    </form>
+
+    <!-- Query Similar Frames Form -->
+    <form id="queryForm">
+        <h2>Query Similar Frames</h2>
+        <input type="file" id="queryImage" name="queryImage" accept="image/*" required>
+        <input type="number" id="limit" name="limit" placeholder="Limit" value="5" required>
+        <button type="submit">Query Frames</button>
+    </form>
+
+    <!-- Response Section -->
+    <div id="response" class="response"></div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const queryForm = document.getElementById('queryForm');
+        const responseDiv = document.getElementById('response');
+
+        // Handle Video Upload
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('video_file', document.getElementById('videoFile').files[0]);
+            formData.append('interval_seconds', document.getElementById('intervalSeconds').value);
+
+            try {
+                const response = await fetch('http://localhost:8000/upload_and_process_video/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                responseDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                responseDiv.innerHTML = `<pre>Error: ${error.message}</pre>`;
+            }
+        });
+
+        // Handle Query Similar Frames
+        queryForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('query_image', document.getElementById('queryImage').files[0]);
+            formData.append('limit', document.getElementById('limit').value);
+
+            try {
+                const response = await fetch('http://localhost:8000/query_similar_frames/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                responseDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                responseDiv.innerHTML = `<pre>Error: ${error.message}</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>
